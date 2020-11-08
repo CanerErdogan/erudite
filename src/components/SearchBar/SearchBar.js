@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-// import sendRequestToSearch from '../../api/server.js';
+import { API_URL } from '../../constants';
 
 const SearchBar = () => {
 
@@ -21,11 +21,16 @@ const SearchBar = () => {
 
   const onSearch = (event) => {
     if (event.keyCode === 13) {
-      // console.log(`search ${searchField}`);
-      // sendRequestToSearch(searchSite, searchField);
-      // fetch(`https://api.duckduckgo.com/?q=${searchField}&format=json`)
-      //   .then(res => res.json())
-      //   .then(console.log("Success"));
+      fetch(`${API_URL}/search`, {
+        method: "post",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          site: searchSite.key,
+          query: searchField
+        })
+      })
+        .then(res => res.json()).then(searchUrl => window.open(searchUrl))
+        .catch(err => { console.log("App fail: " + err) });
     }
   }
 
