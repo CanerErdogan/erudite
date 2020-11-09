@@ -35,7 +35,7 @@ const SearchBar = () => {
   }
 
   return (
-    <div className="center flex w-50">
+    <div className="center-l flex mw8 ma3-l ma0">
       <select id="search-site-menu" className="ba b--black-20 pa2 mb2 db w-20" name="search-site" onWheel={searchWheel}>
         {searchSiteList.map(site => {
           const {value, label, key} = site;
