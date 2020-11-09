@@ -20,7 +20,6 @@ function App() {
       .catch(err => { 
         console.log("App fail: " + err);
         setBackground(`url(${DEFAULT_BG_URL})`);
-        // setCssProps({'--background': 'url("https://images.unsplash.com/photo-1589366025085-d060e3f956e6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80")'});
       });
     
   };
@@ -38,21 +37,7 @@ function App() {
         </div>
       </div>
     </div>
-  );/* (
-    <div className="App">
-      <div style={{
-        backgroundImage: `${background}`,
-        backgroundSize: 'cover',
-        position: 'absolute',
-        width: '100vw',
-        height: '100vh'
-      }}>
-        <NoteCard />
-        <SearchBar />
-        <button className="f6 link dim br1 ba ph3 pv2 mb2 dib black pointer" onClick={changeBackground}>Change Background</button>
-      </div>
-    </div>
-  ); */
+  );
 }
 
 export default App;
