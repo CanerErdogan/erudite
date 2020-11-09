@@ -1,5 +1,30 @@
+#variables {
+  --background: unset;
+}
+
+.bg-wrapper {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.bg-wrapper::before {
+  content: "";
+  background-image: var(--background);/* url("https://images.unsplash.com/photo-1589366025085-d060e3f956e6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80"); */
+  background-size: cover;
+  background-position: center;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  filter: blur(5px);
+  -webkit-filter: blur(5px);
+  transform: scale(1.05);
+}
+
 .App {
   text-align: center;
+  position: relative;
 }
 
 .App-logo {
