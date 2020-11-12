@@ -20,18 +20,22 @@ const NoteCard = () => {
     id: null
   };
 
-  const [note, setNote] = useState(defaultNote);
-  const [buttonsVisible, setButtonsVisible] = useState(false);
-  const [noteFormVisible, setNoteFormVisible] = useState(false);
-
-  const [noteInput, setNoteInput] = useState({
+  const emptyNote = {
     title: '',
     content: '',
     id: null
-  });
+  };
 
-  const nextNote = () => {
-    fetch(`${API_URL}/note`)
+  const [note, setNote] = useState(defaultNote);
+  const [noteInput, setNoteInput] = useState(emptyNote);
+
+  const [buttonsVisible, setButtonsVisible] = useState(false);
+  const [noteFormVisible, setNoteFormVisible] = useState(false);
+  const [editActive, setEditActive] = useState(false);
+
+  const fetchNote = (id) => {
+    const routeExtension = id ? `/${id}` : '';
+    fetch(`${API_URL}/note${routeExtension}`)
       .then(res => {
         if (res.status === 200) { return res.json() }
         else if (res.status === 204) { return defaultNote }
@@ -56,10 +60,11 @@ const NoteCard = () => {
         body: JSON.stringify({title, content})
       })
         .then(res => res.json())
-        .then(data => {
-          console.log(data);
+        .then(id => {
+          fetchNote(id);
           setNoteFormVisible(false);
         }).catch(err => {console.log("Post note error: "+ err)});
+        setNoteInput(emptyNote);
     } else {console.log("Fill both fields.")}
   };
 
@@ -72,13 +77,30 @@ const NoteCard = () => {
       .then(res => res.json())
       .then(data => {
         setNoteFormVisible(false);
-        nextNote();
+        fetchNote();
       })
       .catch(err => {console.log("Delete note error: "+ err)});
   };
 
+  const editNote = () => {
+    const { title, content } = noteInput;
+    if (title && content) {
+      fetch(`${API_URL}/note/${note.id}`, {
+        method: "put",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({title, content})
+      })
+        .then(res => res.json())
+        .then(id => {
+          setEditActive(false);
+          setNoteFormVisible(false);
+          fetchNote(id);
+        }).catch(err => {console.log("Post note error: "+ err)});
+    } else {console.log("Fill both fields.")}
+  }
+
   useEffect(() => { setNoteFormVisible(false) }, []);
-  useEffect(() => { nextNote() }, []);
+  useEffect(() => { fetchNote() }, []);
 
   return (
     <div className="center center-ns measure-wide-l measure-wide-m ma0 ma5-ns mt2 mt2-ns pa0 pa4-ns" onMouseLeave={() => setButtonsVisible(noteFormVisible)}>
@@ -86,14 +108,21 @@ const NoteCard = () => {
         <Animated animationIn="slideInUp" animationOut="slideOutDown" animationInDuration={400} animationOutDuration={400} isVisible={buttonsVisible}>
           {noteFormVisible
             ? <div className="tr tr-ns button-wrapper">
-              <i className="pointer contain f5 mh2-ns mh2 mv0-ns mv0 dib note-button cancel-note" onClick={() => setNoteFormVisible(false)}></i>
-              <i className="pointer contain f5 mh2-ns mh2 mv0-ns mv0 dib note-button accept-note" onClick={addNote}></i>
+              <i className="pointer contain f5 mh2-ns mh2 mv0-ns mv0 dib note-button cancel-note" onClick={() => {
+                setNoteInput(emptyNote);
+                setNoteFormVisible(false);
+                }}></i>
+              <i className="pointer contain f5 mh2-ns mh2 mv0-ns mv0 dib note-button accept-note" onClick={editActive ? editNote : addNote}></i>
             </div>
             : <div className="tr tr-ns button-wrapper">
               <i className="pointer contain f5 mh2-ns mh2 mv0-ns mv0 dib note-button delete-note" onClick={deleteNote}></i>
-              <i className="pointer contain f5 mh2-ns mh2 mv0-ns mv0 dib note-button edit-note"></i>
+              <i className="pointer contain f5 mh2-ns mh2 mv0-ns mv0 dib note-button edit-note" onClick={() => {
+                setNoteInput(note);
+                setEditActive(true);
+                setNoteFormVisible(true);
+                }}></i>
               <i className="pointer contain f5 mh2-ns mh2 mv0-ns mv0 dib note-button browse-notes"></i>
-              <i className="pointer contain f5 mh2-ns mh2 mv0-ns mv0 dib note-button next-note" onClick={nextNote}></i>
+              <i className="pointer contain f5 mh2-ns mh2 mv0-ns mv0 dib note-button next-note" onClick={() => fetchNote()}></i>
               <i className="pointer contain f5 mh2-ns mh2 mv0-ns mv0 dib note-button add-note" onClick={() => setNoteFormVisible(true)}></i>
             </div>
           }
@@ -105,11 +134,15 @@ const NoteCard = () => {
           ? <div>
             <div className="tc">
               <textarea className="f4 b b--none tc mt2 mb0 pb1 pt1"
-                rows="1" name="title" id="title" placeholder="Title" autoFocus onChange={onNoteChange}></textarea>
+                rows="1" name="title" id="title" placeholder="Title" autoFocus
+                value={noteInput.title} onChange={onNoteChange}>
+              </textarea>
               <hr className="mw3 bb bw1 b--black-10"></hr>
             </div>
-            <textarea className="lh-copy measure center b--none f5 black-70 mt2 w-100 h-70"
-              rows="7" name="content" id="content" placeholder="Type note content" onChange={onNoteChange}></textarea>
+            <textarea className="lh-copy measure center b--none f5 black-70 mt1 w-100 h-70"
+              rows="7" name="content" id="content" placeholder="Type note content"
+              value={noteInput.content} onChange={onNoteChange}>
+            </textarea>
           </div>
           : <div>
             <div className="tc">
