@@ -1,3 +1,12 @@
+#title {
+    resize: none;
+    height: 1.8em;
+}
+
+#content {
+    resize: vertical;
+}
+
 .note-button {
     opacity: 0.4;
     transition: opacity 0.15s ease-in;
@@ -21,10 +30,9 @@
     -webkit-transform: scaleX(-1);
 }
 
-.next-note {
-    background: url(./icons/spinner-arrow.svg);
-}
-
-.add-note {
-    background: url(./icons/add-files.svg);
-}
+.next-note {background: url(./icons/spinner-arrow.svg);}
+.add-note {background: url(./icons/add-files.svg);}
+.browse-notes {background: url(./icons/layers.svg);}
+.edit-note {background: url(./icons/pencil.svg);}
+.cancel-note {background: url(./icons/close.svg);}
+.accept-note {background: url(./icons/checkmark.svg);}

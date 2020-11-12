@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import logo from '../logo.svg';
 import './App.css';
 
 import NoteCard from '../components/NoteCard/NoteCard';
@@ -21,7 +20,6 @@ function App() {
         console.log("App fail: " + err);
         setBackground(`url(${DEFAULT_BG_URL})`);
       });
-    
   };
 
   useEffect(() => { changeBackground() }, []);

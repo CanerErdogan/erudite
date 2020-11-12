@@ -1,60 +1,129 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Animated } from 'react-animated-css';
+
 import './NoteCard.css';
 
+import { API_URL } from '../../constants';
+
+
 const NoteCard = () => {
-  const notes = [
-    {
-      title: "Mimi Whitehouse",
-      text: "Quite affectionate and outgoing.\
-             She loves to get chin scratches and will\
-             roll around on the floor waiting for you give her more of them."
-    },
-    {
-      title: "Lorem Ipsum Nedir?",
-      text: "Lorem Ipsum, dizgi ve baskı endüstrisinde kullanılan mıgır metinlerdir. \
-             Lorem Ipsum, adı bilinmeyen bir matbaacının bir hurufat numune \
-             kitabı oluşturmak üzere bir yazı galerisini alarak karıştırdığı 1500'lerden \
-             beri endüstri standardı sahte metinler olarak kullanılmıştır. Beşyüz yıl \
-             boyunca varlığını sürdürmekle kalmamış, aynı zamanda pek değişmeden \
-             elektronik dizgiye de sıçramıştır. 1960'larda Lorem Ipsum pasajları da \
-             içeren Letraset yapraklarının yayınlanması ile ve yakın zamanda Aldus \
-             PageMaker gibi Lorem Ipsum sürümleri içeren masaüstü yayıncılık yazılımları \
-             ile popüler olmuştur."
-    }
-  ];
 
-  const [note, setNote] = useState(notes[Math.floor(Math.random() * notes.length)]);
+  const defaultNote = {
+    title: "Title For Your First Note",
+    content: "No notes available now. Let's add one!",
+    id: null
+  };
+  
+  const errorNote = {
+    title: "Cannot Display Notes",
+    content: "Error connecting to the server, please check later.",
+    id: null
+  };
+
+  const [note, setNote] = useState(defaultNote);
   const [buttonsVisible, setButtonsVisible] = useState(false);
+  const [noteFormVisible, setNoteFormVisible] = useState(false);
 
-  // const initialDisplay = false;
-  const displayButtons = (enable) => {
-    // if (enable){
-    //   initialDisplay = true;
-    // }
-    setButtonsVisible(enable);
-  }
+  const [noteInput, setNoteInput] = useState({
+    title: '',
+    content: '',
+    id: null
+  });
+
+  const nextNote = () => {
+    fetch(`${API_URL}/note`)
+      .then(res => {
+        if (res.status === 200) { return res.json() }
+        else if (res.status === 204) { return defaultNote }
+        else { return errorNote }
+      })
+      .then(setNote)
+      .catch(err => { setNote(errorNote) });
+  };
+
+  const onNoteChange = (event) => {
+    const { name, value } = event.target;
+    if (name === 'title') { setNoteInput({ ...noteInput, title: value }) }
+    else if (name === 'content') { setNoteInput({ ...noteInput, content: value }) }
+  };
+
+  const addNote = () => {
+    const { title, content } = noteInput;
+    if (title && content) {
+      fetch(`${API_URL}/note`, {
+        method: "post",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({title, content})
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log(data);
+          setNoteFormVisible(false);
+        }).catch(err => {console.log("Post note error: "+ err)});
+    } else {console.log("Fill both fields.")}
+  };
+
+  const deleteNote = () => {
+    const { id } = note;
+    fetch(`${API_URL}/note/${id}`, {
+      method: "delete",
+      headers: { "Content-Type": "application/json" }
+    })
+      .then(res => res.json())
+      .then(data => {
+        setNoteFormVisible(false);
+        nextNote();
+      })
+      .catch(err => {console.log("Delete note error: "+ err)});
+  };
+
+  useEffect(() => { setNoteFormVisible(false) }, []);
+  useEffect(() => { nextNote() }, []);
 
   return (
-    <div className="center center-ns measure-l measure-m ma0 ma5-ns mt2 mt2-ns pa0 pa4-ns" onMouseLeave={() => displayButtons(false)}>
+    <div className="center center-ns measure-wide-l measure-wide-m ma0 ma5-ns mt2 mt2-ns pa0 pa4-ns" onMouseLeave={() => setButtonsVisible(noteFormVisible)}>
       <Animated animationIn="fadeIn" animationOut="fadeOut" animationInDuration={250} animationOutDuration={250} isVisible={buttonsVisible}>
         <Animated animationIn="slideInUp" animationOut="slideOutDown" animationInDuration={400} animationOutDuration={400} isVisible={buttonsVisible}>
-          <div className="tr tr-ns button-wrapper">
-            <i className="pointer contain f5 mh2-ns mh2 mv0-ns mv0 dib note-button delete-note"></i>
-            <i className="pointer contain f5 mh2-ns mh2 mv0-ns mv0 dib note-button next-note"></i>
-            <i className="pointer contain f5 mh2-ns mh2 mv0-ns mv0 dib note-button add-note"></i>
-          </div>
+          {noteFormVisible
+            ? <div className="tr tr-ns button-wrapper">
+              <i className="pointer contain f5 mh2-ns mh2 mv0-ns mv0 dib note-button cancel-note" onClick={() => setNoteFormVisible(false)}></i>
+              <i className="pointer contain f5 mh2-ns mh2 mv0-ns mv0 dib note-button accept-note" onClick={addNote}></i>
+            </div>
+            : <div className="tr tr-ns button-wrapper">
+              <i className="pointer contain f5 mh2-ns mh2 mv0-ns mv0 dib note-button delete-note" onClick={deleteNote}></i>
+              <i className="pointer contain f5 mh2-ns mh2 mv0-ns mv0 dib note-button edit-note"></i>
+              <i className="pointer contain f5 mh2-ns mh2 mv0-ns mv0 dib note-button browse-notes"></i>
+              <i className="pointer contain f5 mh2-ns mh2 mv0-ns mv0 dib note-button next-note" onClick={nextNote}></i>
+              <i className="pointer contain f5 mh2-ns mh2 mv0-ns mv0 dib note-button add-note" onClick={() => setNoteFormVisible(true)}></i>
+            </div>
+          }
         </Animated>
       </Animated>
-      <article className="measure-l measure-m mb0-ns mb0 mb3-ns mb3 bg-white br3 pa1 pa4-ns mv3 ba b--black-10"
-        onMouseEnter={() => displayButtons(true)}>
-        <div className="tc">
-          <h1 className="f4">{note.title}</h1>
-          <hr className="mw3 bb bw1 b--black-10"></hr>
-        </div>
-        <p className="lh-copy measure center f5 black-70">
-          {note.text}
-        </p>
+      <article className="measure-l measure-m mb3-ns mb3 bg-white br3 pa1 pa4-ns mv3 ba b--black-10"
+        onMouseEnter={() => setButtonsVisible(true)}>
+        {noteFormVisible
+          ? <div>
+            <div className="tc">
+              <textarea className="f4 b b--none tc mt2 mb0 pb1 pt1"
+                rows="1" name="title" id="title" placeholder="Title" autoFocus onChange={onNoteChange}></textarea>
+              <hr className="mw3 bb bw1 b--black-10"></hr>
+            </div>
+            <textarea className="lh-copy measure center b--none f5 black-70 mt2 w-100 h-70"
+              rows="7" name="content" id="content" placeholder="Type note content" onChange={onNoteChange}></textarea>
+          </div>
+          : <div>
+            <div className="tc">
+              <h1 className="f4 mb3">{note.title}</h1>
+              <hr className="mw3 bb bw1 b--black-10 mt0"></hr>
+            </div>
+            
+            {note.content.split('\n').map((paragraph, idx) => {
+              return (
+                <p className="lh-copy measure tl f5 black-70 mv0 mv0-l" key={"paragraph" + idx}>{paragraph}</p>
+              );
+            })}
+          </div>
+        }
       </article>
     </div>
   );
