@@ -1,30 +1,9 @@
-#variables {
+#variables{
   --background: unset;
-}
-
-.bg-wrapper {
-  position: absolute;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-}
-
-.bg-wrapper::before {
-  content: "";
-  background-image: var(--background);
-  background-size: cover;
-  background-position: center;
-  width: 100vw;
-  height: 100vh;
-  position: absolute;
-  filter: blur(5px);
-  -webkit-filter: blur(5px);
-  transform: scale(1.05);
 }
 
 .App {
   text-align: center;
-  position: relative;
 }
 
 .App-logo {
