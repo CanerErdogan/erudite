@@ -32,14 +32,22 @@ export default function NoteCard(props) {
   };
 
   useEffect(() => { fetchNote() }, []);
+  useEffect(() => {
+    if (document.getElementById(`note-content-${note.id}`).scrollTopMax > 0) {
+      document.getElementById(`note-content-${note.id}`).style.height = 
+        document.getElementById(`note-content-${note.id}`).scrollHeight + 10 + 'px';
+    }
+  }, [note])
 
   return (
     <Card style={{ width: '30rem' }}>
       <Card.Body>
         <Card.Title>{note.title}</Card.Title>
         <Card.Text
+          id={`note-content-${note.id}`}
           className="note-content"
           as="textarea"
+          rows="2"
           value={note.content}
         ></Card.Text>
       </Card.Body>

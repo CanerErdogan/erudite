@@ -1,3 +1,5 @@
-#note-content {
-  resize: none;
+.note-content {
+  resize: vertical !important;
+  width: 100%;
+  overflow: visible
 }
