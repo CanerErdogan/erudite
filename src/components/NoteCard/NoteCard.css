@@ -1,5 +1,12 @@
-.note-content {
-  resize: vertical !important;
+.note-title {
   width: 100%;
-  overflow: visible
+  border: none;
+  font-size: x-large;
+}
+
+.note-content {
+  resize: none !important;
+  width: 100%;
+  overflow: visible;
+  border: none;
 }

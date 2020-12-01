@@ -42,14 +42,18 @@ export default function NoteCard(props) {
   return (
     <Card style={{ width: '30rem' }}>
       <Card.Body>
-        <Card.Title>{note.title}</Card.Title>
+        <Card.Title
+          className="note-title"
+          as="input"
+          value={note.title}
+        />
         <Card.Text
           id={`note-content-${note.id}`}
           className="note-content"
           as="textarea"
           rows="2"
           value={note.content}
-        ></Card.Text>
+        />
       </Card.Body>
     </Card>
   );

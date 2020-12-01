@@ -36,7 +36,7 @@ export default function Search(props) {
   }, []);
 
   return (
-    <InputGroup>
+    <InputGroup style={{margin: '1rem 1rem'}}>
       <DropdownButton title={searchSite ? searchSite.label : 'Loading'}>
         {searchList.map(site => {
           return (
@@ -52,6 +52,7 @@ export default function Search(props) {
         type="text" onKeyUp={handleSearch}
         onChange={event => {setSearchField(event.target.value)}}
         placeholder="Type to search"
+        style={{marginRight: '2rem'}}
       />
     </InputGroup>    
   );
