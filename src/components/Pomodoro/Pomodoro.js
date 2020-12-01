@@ -10,7 +10,7 @@ export default function Pomodoro(props) {
       };
       case 'SHORT': return {
         ...state,
-        mode: 'Short', seconds: 5*0.2, pause: true,
+        mode: 'Short', seconds: 5*60, pause: true,
       };
       case 'LONG': return {
         ...state,
