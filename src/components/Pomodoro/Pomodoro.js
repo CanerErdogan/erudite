@@ -1,42 +1,49 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import { Button, ButtonGroup, Card, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 export default function Pomodoro(props) {
-  // const timestamp = null;
-  const [seconds, setSeconds] = useState(25*60);
-  const [pause, setPause] = useState(true);
-  const [mode, setMode] = useState('Pomodoro');
+  const [state, dispatch] = useReducer((state, action) => {
+    switch(action.type) {
+      case 'POMODORO': return {
+        ...state,
+        mode: 'Pomodoro', seconds: 25*60, pause: true
+      };
+      case 'SHORT': return {
+        ...state,
+        mode: 'Short', seconds: 5*0.2, pause: true,
+      };
+      case 'LONG': return {
+        ...state,
+        mode: 'Long', seconds: 15*60, pause: true
+      };
+      case 'COUNT': return {
+        ...state,
+        seconds: state.seconds - !state.pause
+      };
+      case 'TOGGLE': return{
+        ...state,
+        pause: !state.pause
+      }
+      default: return state;
+    }
+  }, {
+    mode: 'Pomodoro',
+    seconds: 25*60,
+    pause: true
+  });
 
+  const { seconds, pause, mode } = state;
+  const time = new Date(seconds * 1000).toISOString().substr(14, 5);
   const audio = new Audio('./alert.mp3');
-
-  function handlePomodoro(event) {
-    setMode('Pomodoro');
-    setPause(true);
-    setSeconds(25*60);
-  }
-
-  function handleShort(event) {
-    setMode('Short');
-    setPause(true);
-    setSeconds(5*60);
-  }
-
-  function handleLong(event) {
-    setMode('Long');
-    setPause(true);
-    setSeconds(15*60);
-  }
 
   useEffect(() => {
     const timer = seconds > 0 &&
-      setTimeout(() => setSeconds(seconds - !pause), 1000);
+      setTimeout(() => dispatch({ type: 'COUNT' }), 1000);
     if (seconds <= 0) {
       audio.play();
     }
     return () => clearTimeout(timer);
   }, [seconds, pause])
-
-  const time = new Date(seconds * 1000).toISOString().substr(14, 5);
 
   return (
     <OverlayTrigger
@@ -52,12 +59,12 @@ export default function Pomodoro(props) {
         <Card.Body>
             <Card.Title
               style={{fontSize: 'xx-large', cursor: 'pointer'}}
-              onClick={() => setPause(!pause)}
+              onClick={() => dispatch({ type: 'TOGGLE' })}
             >{time}</Card.Title>
           <ButtonGroup size="sm">
-            <Button onClick={handlePomodoro}>Pomodoro</Button>
-            <Button onClick={handleShort}>Short</Button>
-            <Button onClick={handleLong}>Long</Button>
+            <Button onClick={() => dispatch({ type: 'POMODORO' })}>Pomodoro</Button>
+            <Button onClick={() => dispatch({ type: 'SHORT' })}>Short</Button>
+            <Button onClick={() => dispatch({ type: 'LONG' })}>Long</Button>
           </ButtonGroup>
         </Card.Body>
       </Card>
