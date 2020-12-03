@@ -1,3 +1,5 @@
+import { Container, Row } from 'react-bootstrap';
+
 import './App.css';
 
 import Background from './components/Background/Background';
@@ -9,8 +11,30 @@ function App() {
   return (
     <Background>
       <Search />
-      <Content />
-      <Pomodoro />
+      <Container fluid
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Row
+          style={{
+            zIndex: 1,
+            height: '74.5vh',
+            display: 'flex',
+            // flexDirection: 'column',
+            justifyContent: 'space-between',
+            overflowX: 'hidden',
+            overflowY: 'auto',
+        }}
+        >
+          <Content />
+        </Row>
+        <Row style={{bottom: 0}}>
+          <Pomodoro />
+        </Row>
+      </Container>
     </Background>
   );
 }

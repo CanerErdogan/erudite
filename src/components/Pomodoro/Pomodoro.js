@@ -48,16 +48,13 @@ export default function Pomodoro(props) {
   return (
     <OverlayTrigger
       placement="top"
-      overlay={
-        <Tooltip>Click on timer to count/pause.</Tooltip>}
+      overlay={<Tooltip>Click on timer to count/pause.</Tooltip>}
     >
       <Card
         style={{
           width: '15rem',
           textAlign: 'center',
-          position: 'absolute',
           left: '1rem',
-          bottom: '1rem'
         }}
         onClick={() => audio.pause()}
       >

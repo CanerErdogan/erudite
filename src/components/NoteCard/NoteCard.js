@@ -42,8 +42,8 @@ export default function NoteCard(props) {
   }, [note])
 
   return (
-    <Container style={{ margin: '0', padding: '0' }}>
-      <Card style={{ width: '30rem'}}>
+    <Container style={{ width: '30rem', margin: '0', paddingLeft: '0' }}>
+      <Card style={{ width: '100%'}}>
         <Card.Body>
           <Card.Title
             className="note-title"
