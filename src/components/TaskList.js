@@ -5,7 +5,13 @@ const tasks = ['Yoga', 'Erudite', 'Kahvaltı', 'Dune', 'Data', 'Yemek', 'Nutuk']
 
 export default function TaskList(props) {
   return (
-    <Card style={{width: '30rem'}}>
+    <Card
+      style={{
+        width: '30rem',
+        background: 'none',
+        border: 'none'
+      }}
+    >
       {tasks.map(task => {
         return (
           <InputGroup>

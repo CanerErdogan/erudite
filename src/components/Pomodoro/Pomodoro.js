@@ -52,7 +52,13 @@ export default function Pomodoro(props) {
         <Tooltip>Click on timer to count/pause.</Tooltip>}
     >
       <Card
-        style={{width: '15rem', textAlign: 'center'}}
+        style={{
+          width: '15rem',
+          textAlign: 'center',
+          position: 'absolute',
+          left: '1rem',
+          bottom: '1rem'
+        }}
         onClick={() => audio.pause()}
       >
         <Card.Header>{mode}{pause ? '  \u25A0' : '  \u25B8'}</Card.Header>

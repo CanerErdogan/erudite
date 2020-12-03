@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Card } from 'react-bootstrap';
+import { Card, Container } from 'react-bootstrap';
+import { Transition } from 'react-transition-group';
 
+import Buttons from './Buttons/Buttons'
 import { API_URL } from '../../constants';
 import './NoteCard.css'
 
@@ -35,26 +37,31 @@ export default function NoteCard(props) {
   useEffect(() => {
     if (document.getElementById(`note-content-${note.id}`).scrollTopMax > 0) {
       document.getElementById(`note-content-${note.id}`).style.height = 
-        document.getElementById(`note-content-${note.id}`).scrollHeight + 10 + 'px';
+        (document.getElementById(`note-content-${note.id}`).scrollHeight + 10) + 'px';
     }
   }, [note])
 
   return (
-    <Card style={{ width: '30rem' }}>
-      <Card.Body>
-        <Card.Title
-          className="note-title"
-          as="input"
-          value={note.title}
-        />
-        <Card.Text
-          id={`note-content-${note.id}`}
-          className="note-content"
-          as="textarea"
-          rows="2"
-          value={note.content}
-        />
-      </Card.Body>
-    </Card>
+    <Container style={{ margin: '0', padding: '0' }}>
+      <Card style={{ width: '30rem'}}>
+        <Card.Body>
+          <Card.Title
+            className="note-title"
+            as="input"
+            value={note.title}
+          />
+          <Card.Text
+            id={`note-content-${note.id}`}
+            className="note-content"
+            as="textarea"
+            rows="2"
+            value={note.content}
+          />
+        </Card.Body>
+      </Card>
+      <Transition>
+        <Buttons />
+      </Transition>
+    </Container>
   );
 }
